@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/programsFragment">
+
+    <fragment
+        android:id="@+id/programsFragment"
+        android:name="com.sergey.pugachov.iawake.ui.programs.ProgramsFragment"
+        android:label="ProgramsFragment" >
+        <action
+            android:id="@+id/open_program_details_action"
+            app:destination="@id/tracksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tracksFragment"
+        android:name="com.sergey.pugachov.iawake.ui.tracks.TracksFragment"
+        android:label="TracksFragment" >
+        <argument
+            android:name="programId"
+            app:argType="string" />
+        <argument
+            android:name="programCoverUrl"
+            app:argType="string" />
+        <argument
+            android:name="programTitle"
+            app:argType="string" />
+    </fragment>
+</navigation>
