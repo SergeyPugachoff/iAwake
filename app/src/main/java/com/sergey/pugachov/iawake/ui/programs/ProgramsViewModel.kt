@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergey.pugachov.iawake.domain.model.common.Result
 import com.sergey.pugachov.iawake.domain.model.programs.ProgramModel
-import com.sergey.pugachov.iawake.domain.repository.ProgramsRepository
+import com.sergey.pugachov.iawake.domain.usecase.GetPrograms
 import kotlinx.coroutines.launch
 
-class ProgramsViewModel(private val repository: ProgramsRepository) : ViewModel() {
+class ProgramsViewModel(private val getPrograms: GetPrograms) : ViewModel() {
 
     private val _programs: MutableLiveData<List<ProgramModel>> = MutableLiveData()
     val programs: LiveData<List<ProgramModel>> = _programs
@@ -25,7 +25,7 @@ class ProgramsViewModel(private val repository: ProgramsRepository) : ViewModel(
         viewModelScope.launch {
             _isLoading.value = true
 
-            val result = repository.getPrograms()
+            val result = getPrograms()
 
             _isLoading.value = false
             _programs.value = if (result is Result.Success) result.data else emptyList()

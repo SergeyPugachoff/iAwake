@@ -6,15 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergey.pugachov.iawake.domain.model.common.Result
 import com.sergey.pugachov.iawake.domain.model.programs.TrackModel
-import com.sergey.pugachov.iawake.domain.repository.ProgramsRepository
-import com.sergey.pugachov.iawake.playback.TrackPlayer
+import com.sergey.pugachov.iawake.domain.usecase.GetProgramTracks
 import com.sergey.pugachov.iawake.playback.PlayerState
+import com.sergey.pugachov.iawake.playback.TrackPlayer
 import com.sergey.pugachov.iawake.ui.tracks.model.SelectedTrack
 import kotlinx.coroutines.launch
 
 class TracksViewModel(
     private val programId: String,
-    private val repository: ProgramsRepository,
+    private val getProgramTracks: GetProgramTracks,
     private val trackPlayer: TrackPlayer
 ) : ViewModel() {
 
@@ -54,7 +54,7 @@ class TracksViewModel(
 
     private fun getTracks() {
         viewModelScope.launch {
-            val result = repository.getProgramTracks(programId)
+            val result = getProgramTracks(programId)
             _tracks.value = if (result is Result.Success) result.data else emptyList()
         }
     }

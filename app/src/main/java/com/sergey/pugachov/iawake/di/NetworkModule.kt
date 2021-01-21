@@ -13,14 +13,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
-    single { provideRetrofit() }
-    factory { provideApiService(get(), ProgramsApiService::class.java) }
+    single { provideRetrofit(get()) }
+    single { provideApiService(get(), ProgramsApiService::class.java) }
 }
 
+interface NetworkSettings {
+    val baseUrl:String
+    val timeout : Long
+}
 
-private const val BASE_URL = "https://api.iawaketechnologies.com/"
 private val converterFactory: Converter.Factory = GsonConverterFactory.create(Gson())
-private val okHttpClient: OkHttpClient =
+
+private fun buildOkHttpClient(timeout:Long): OkHttpClient =
     OkHttpClient.Builder().apply {
         if (BuildConfig.DEBUG) {
             addInterceptor(
@@ -30,15 +34,15 @@ private val okHttpClient: OkHttpClient =
             )
             addInterceptor(StethoInterceptor())
         }
-    }.connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+    }.connectTimeout(timeout, TimeUnit.SECONDS)
+        .readTimeout(timeout, TimeUnit.SECONDS)
         .build()
 
-private fun provideRetrofit(): Retrofit =
+private fun provideRetrofit(networkSettings: NetworkSettings): Retrofit =
     Retrofit.Builder()
         .addConverterFactory(converterFactory)
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
+        .baseUrl(networkSettings.baseUrl)
+        .client(buildOkHttpClient(networkSettings.timeout))
         .build()
 
 private fun <T> provideApiService(retrofit: Retrofit, serviceClass: Class<T>): T =

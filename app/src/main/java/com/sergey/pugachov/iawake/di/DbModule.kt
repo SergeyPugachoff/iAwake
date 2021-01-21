@@ -9,14 +9,18 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val dbModule = module {
-    single { provideDataBase(androidApplication()) }
-    factory { provideProgramDao(get()) }
-    factory { provideTrackDao(get()) }
+    single { provideDataBase(androidApplication(), get()) }
+    single { provideProgramDao(get()) }
+    single { provideTrackDao(get()) }
+}
+
+interface DbSettings {
+    val dbName : String
 }
 
 private fun provideProgramDao(dataBase: DataBase): ProgramDao = dataBase.programDao()
 
 private fun provideTrackDao(dataBase: DataBase): TrackDao = dataBase.trackDao()
 
-private fun provideDataBase(context: Context): DataBase =
-    Room.databaseBuilder(context, DataBase::class.java, "IAwake.db").build()
+private fun provideDataBase(context: Context, dbSettings: DbSettings): DataBase =
+    Room.databaseBuilder(context, DataBase::class.java, dbSettings.dbName).build()

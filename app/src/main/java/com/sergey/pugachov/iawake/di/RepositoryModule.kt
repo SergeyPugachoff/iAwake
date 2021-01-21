@@ -6,10 +6,12 @@ import com.sergey.pugachov.iawake.data.repository.LocalDataSource
 import com.sergey.pugachov.iawake.data.repository.ProgramsRepositoryImpl
 import com.sergey.pugachov.iawake.data.repository.RemoteDataSource
 import com.sergey.pugachov.iawake.domain.repository.ProgramsRepository
+import com.sergey.pugachov.iawake.domain.usecase.GetProgramTracks
+import com.sergey.pugachov.iawake.domain.usecase.GetPrograms
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    factory<LocalDataSource> { LocalDataSourceImpl(get(), get()) }
-    factory<RemoteDataSource> { RemoteDataSourceImpl(get()) }
+    single<LocalDataSource> { LocalDataSourceImpl(get(), get()) }
+    single<RemoteDataSource> { RemoteDataSourceImpl(get()) }
     single<ProgramsRepository> { ProgramsRepositoryImpl(get(), get()) }
 }
