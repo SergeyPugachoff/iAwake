@@ -12,6 +12,7 @@ import com.sergey.pugachov.iawake.R
 import kotlinx.android.synthetic.main.fragment_programs.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
+// TODO: 23.01.2021 Replace kotlin synthetic with viewBinding
 class ProgramsFragment : Fragment() {
 
     private val viewModel: ProgramsViewModel by viewModel()

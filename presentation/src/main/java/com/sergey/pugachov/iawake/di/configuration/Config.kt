@@ -1,7 +1,7 @@
 package com.sergey.pugachov.iawake.di.configuration
 
-import com.sergey.pugachov.iawake.di.modules.DbSettings
-import com.sergey.pugachov.iawake.di.modules.NetworkSettings
+import com.sergey.pugachov.iawake.data.di.DbSettings
+import com.sergey.pugachov.iawake.data.di.NetworkSettings
 
 object Config : DbSettings, NetworkSettings {
 

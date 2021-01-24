@@ -1,10 +1,10 @@
-package com.sergey.pugachov.iawake.di.modules
+package com.sergey.pugachov.iawake.domain.di
 
 import com.sergey.pugachov.iawake.domain.usecase.GetProgramTracksUseCase
 import com.sergey.pugachov.iawake.domain.usecase.GetProgramsUseCase
 import org.koin.dsl.module
 
-val useCaseModule = module {
+val domainModule = module {
     factory { GetProgramsUseCase(get()) }
     factory { GetProgramTracksUseCase(get()) }
 }

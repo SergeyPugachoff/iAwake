@@ -35,9 +35,11 @@ android {
 }
 
 dependencies {
-
     implementation Deps.Kotlin.kotlinStdLib
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation Deps.Koin.koin
+
+    testImplementation Deps.Test.junit
+    androidTestImplementation Deps.AndroidX.Test.junit
+    androidTestImplementation Deps.AndroidX.Test.espresso
 }

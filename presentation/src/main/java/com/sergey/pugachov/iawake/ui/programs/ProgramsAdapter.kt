@@ -9,6 +9,7 @@ import coil.load
 import com.sergey.pugachov.iawake.R
 import com.sergey.pugachov.iawake.domain.model.programs.ProgramModel
 
+// TODO: 23.01.2021 Create viewHolder with viewBinding
 class ProgramsAdapter(
     private val listener: (program: ProgramModel) -> Unit
 ) : RecyclerView.Adapter<ProgramsAdapter.ProgramsViewHolder>() {

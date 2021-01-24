@@ -1,9 +1,8 @@
-package com.sergey.pugachov.iawake.data.db
+package com.sergey.pugachov.iawake.data.datasource
 
 import com.sergey.pugachov.iawake.data.db.dao.ProgramDao
 import com.sergey.pugachov.iawake.data.db.dao.TrackDao
 import com.sergey.pugachov.iawake.data.db.entity.TrackEntity
-import com.sergey.pugachov.iawake.data.repository.LocalDataSource
 import com.sergey.pugachov.iawake.domain.model.programs.ProgramModel
 import com.sergey.pugachov.iawake.domain.model.programs.TrackModel
 
