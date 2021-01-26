@@ -5,19 +5,25 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.ui.PlayerNotificationManager.createWithNotificationChannel
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.util.Util
-import com.sergey.pugachov.iawake.BuildConfig
 import com.sergey.pugachov.iawake.R
 import com.sergey.pugachov.iawake.ui.HostActivity
+import kotlinx.coroutines.*
+
 
 class AudioPlaybackService : Service() {
 
@@ -27,7 +33,7 @@ class AudioPlaybackService : Service() {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             val currentState = when {
                 isPlaying -> PlayerState.Playing
-                player.playbackState == Player.STATE_BUFFERING -> PlayerState.Playing
+                player.playbackState == Player.STATE_BUFFERING -> PlayerState.Buffering
                 player.playbackState == Player.STATE_READY -> PlayerState.Paused
                 else -> PlayerState.Stopped
             }
@@ -56,7 +62,7 @@ class AudioPlaybackService : Service() {
             override fun getCurrentLargeIcon(
                 player: Player,
                 callback: PlayerNotificationManager.BitmapCallback
-            ): Bitmap? = null
+            ): Bitmap? = coverImageBitmap
         }
     private val notificationListener = object : PlayerNotificationManager.NotificationListener {
         override fun onNotificationPosted(
@@ -75,7 +81,21 @@ class AudioPlaybackService : Service() {
             stopSelf()
         }
     }
+    private val dataSourceFactory: DataSource.Factory by lazy {
+        val defaultDataSourceFactory = DefaultDataSourceFactory(
+            applicationContext,
+            Util.getUserAgent(applicationContext, BuildConfig.LIBRARY_PACKAGE_NAME)
+        )
+        val cache = PlayerCacheFactory.getCache(applicationContext)
+        val cacheDataSource = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(defaultDataSourceFactory)
+        cacheDataSource
+    }
+    private val serviceJob = Job()
+    private val serviceScope = CoroutineScope(Dispatchers.Default + serviceJob)
     private var title = ""
+    private var coverImageBitmap: Bitmap? = null
 
     override fun onBind(intent: Intent): IBinder {
         return AudioPlaybackServiceBinder()
@@ -113,22 +133,25 @@ class AudioPlaybackService : Service() {
     }
 
     override fun onDestroy() {
+        serviceScope.cancel()
         playerNotificationManager.setPlayer(null)
         player.release()
 
         super.onDestroy()
     }
 
-    fun play(title: String, uri: Uri) {
+    fun play(title: String, coverUrl: String, mediaUrl: String) {
         this.title = title
-        val userAgent = Util.getUserAgent(applicationContext, BuildConfig.APPLICATION_ID)
-        val dataSourceFactory = DefaultDataSourceFactory(applicationContext, userAgent)
-        val mediaItem = MediaItem.Builder().setUri(uri).build()
+        setCoverImageBitmap(coverUrl)
+        val mediaUri = Uri.parse(mediaUrl)
+        val mediaItem = MediaItem.Builder()
+            .setUri(mediaUri)
+            .build()
         val mediaSource =
             ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
-
         player.setMediaSource(mediaSource, true)
         player.prepare()
+
         player.playWhenReady = true
     }
 
@@ -138,6 +161,20 @@ class AudioPlaybackService : Service() {
 
     fun resume() {
         player.playWhenReady = true
+    }
+
+    private fun setCoverImageBitmap(imageUrl: String) {
+        serviceScope.launch {
+            val loader = ImageLoader(this@AudioPlaybackService)
+            val req = ImageRequest.Builder(this@AudioPlaybackService)
+                .data(imageUrl)
+                .target { result ->
+                    coverImageBitmap = (result as? BitmapDrawable)?.bitmap
+                }
+                .build()
+
+            loader.execute(req)
+        }
     }
 
     inner class AudioPlaybackServiceBinder : Binder() {

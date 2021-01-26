@@ -1,15 +1,12 @@
 package com.sergey.pugachov.iawake.ui.programs
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.sergey.pugachov.iawake.R
+import com.sergey.pugachov.iawake.databinding.ViewProgramListItemBinding
 import com.sergey.pugachov.iawake.domain.model.programs.ProgramModel
 
-// TODO: 23.01.2021 Create viewHolder with viewBinding
 class ProgramsAdapter(
     private val listener: (program: ProgramModel) -> Unit
 ) : RecyclerView.Adapter<ProgramsAdapter.ProgramsViewHolder>() {
@@ -17,9 +14,10 @@ class ProgramsAdapter(
     private val items: MutableList<ProgramModel> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgramsViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_program_list_item, parent, false)
-        return ProgramsViewHolder(view)
+        val binding = ViewProgramListItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return ProgramsViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProgramsViewHolder, position: Int) =
@@ -33,14 +31,18 @@ class ProgramsAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ProgramsViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        private val image = view.findViewById<ImageView>(R.id.programImage)
+    inner class ProgramsViewHolder(
+        private val binding: ViewProgramListItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                listener(items[adapterPosition])
+            }
+        }
 
         fun bind(program: ProgramModel) {
-            view.setOnClickListener {
-                listener(program)
-            }
-            image.load(program.thumbnailUrl)
+            binding.programImage.load(program.thumbnailUrl)
         }
     }
 }

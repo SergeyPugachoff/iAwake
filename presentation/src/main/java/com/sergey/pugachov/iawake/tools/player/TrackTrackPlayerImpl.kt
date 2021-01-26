@@ -1,10 +1,8 @@
 package com.sergey.pugachov.iawake.tools.player
 
 import android.content.*
-import android.net.Uri
 import android.os.IBinder
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.sergey.pugachov.iawake.domain.model.programs.TrackModel
 
 class TrackTrackPlayerImpl(private val applicationContext: Context) : TrackPlayer {
 
@@ -29,8 +27,8 @@ class TrackTrackPlayerImpl(private val applicationContext: Context) : TrackPlaye
         onStateChangedAction = action
     }
 
-    override fun play(track: TrackModel) {
-        audioService.play(track.title, Uri.parse(track.url))
+    override fun play(title: String, imageUrl: String, mediaUrl: String) {
+        audioService.play(title, imageUrl, mediaUrl)
     }
 
     override fun pause() {

@@ -17,7 +17,12 @@ class TracksFragment : Fragment(R.layout.fragment_tracks) {
 
     private val arguments by navArgs<TracksFragmentArgs>()
     private val binding by viewBinding(FragmentTracksBinding::bind)
-    private val viewModel: TracksViewModel by viewModel { parametersOf(arguments.programId) }
+    private val viewModel: TracksViewModel by viewModel {
+        parametersOf(
+            arguments.programId,
+            arguments.programCoverUrl
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
