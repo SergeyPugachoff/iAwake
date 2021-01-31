@@ -71,6 +71,8 @@ dependencies {
 
     implementation Deps.Facebook.stetho
 
+    implementation Deps.Lottie.lottie
+
     testImplementation Deps.Test.junit
     androidTestImplementation Deps.AndroidX.Test.junit
     androidTestImplementation Deps.AndroidX.Test.espresso
