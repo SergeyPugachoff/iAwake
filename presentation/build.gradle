@@ -1,7 +1,9 @@
 plugins {
-    id 'com.android.library'
+    id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 import com.sergey.pugachov.iawake.Dependencies as Deps
@@ -9,17 +11,15 @@ import com.sergey.pugachov.iawake.Dependencies as Deps
 android {
     compileSdkVersion Deps.Build.compileSdkVersion
     buildToolsVersion Deps.Build.buildToolsVersion
-
     defaultConfig {
+        applicationId "com.sergey.pugachov.iawake"
         minSdkVersion Deps.Build.minSdkVersion
         targetSdkVersion Deps.Build.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -33,28 +33,41 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
+    implementation project(':data')
     implementation project(':domain')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation Deps.Kotlin.kotlinStdLib
 
-    implementation Deps.Koin.koin
-
-    implementation Deps.Squareup.Retrofit.retrofit
-    implementation Deps.Squareup.Retrofit.converter
-    implementation Deps.Squareup.OkHttp.loggingInterceptor
+    implementation Deps.Google.material
+    implementation Deps.Google.exoPlayer
 
     implementation Deps.AndroidX.core
+    implementation Deps.AndroidX.appcompat
+    implementation Deps.AndroidX.constraintlayout
+    implementation Deps.AndroidX.swiperefreshlayout
+    implementation Deps.AndroidX.localbroadcastmanager
 
-    implementation Deps.AndroidX.Room.room
-    kapt Deps.AndroidX.Room.compiler
-    androidTestImplementation Deps.AndroidX.Room.testing
+    implementation Deps.AndroidX.Navigation.navigationFragment
+    implementation Deps.AndroidX.Navigation.navigationUi
 
-    implementation Deps.Google.gson
+    implementation Deps.AndroidX.Lifecycle.runtime
+    implementation Deps.AndroidX.Lifecycle.java8
+    implementation Deps.AndroidX.Lifecycle.viewmodel
+    implementation Deps.AndroidX.Lifecycle.livedata
+
+    implementation Deps.Koin.koin
+    implementation Deps.Koin.koinScope
+    implementation Deps.Koin.koinAndroidViewModel
+
+    implementation Deps.Coil.coil
 
     implementation Deps.Facebook.stetho
 
