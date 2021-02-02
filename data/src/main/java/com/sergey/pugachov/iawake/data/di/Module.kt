@@ -14,6 +14,8 @@ import com.sergey.pugachov.iawake.data.network.api.ProgramsApiService
 import com.sergey.pugachov.iawake.data.datasource.LocalDataSource
 import com.sergey.pugachov.iawake.data.repository.ProgramsRepositoryImpl
 import com.sergey.pugachov.iawake.data.datasource.RemoteDataSource
+import com.sergey.pugachov.iawake.data.repository.AudioSettingsRepositoryImpl
+import com.sergey.pugachov.iawake.domain.repository.AudioSettingsRepository
 import com.sergey.pugachov.iawake.domain.repository.ProgramsRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -42,6 +44,7 @@ val dataModule = module {
     single<LocalDataSource> { LocalDataSourceImpl(get(), get()) }
     single<RemoteDataSource> { RemoteDataSourceImpl(get()) }
     single<ProgramsRepository> { ProgramsRepositoryImpl(get(), get()) }
+    single<AudioSettingsRepository> { AudioSettingsRepositoryImpl(androidApplication()) }
 }
 
 private fun provideDataBase(context: Context, dbSettings: DbSettings): DataBase =

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">iAwake</string>
     <string name="programs_toolbar_title">Your programs</string>
+    <string name="audio_settings_speakerphone_label">Speakerphone</string>
+    <string name="audio_settings_off_label">off</string>
+    <string name="audio_settings_on_label">on</string>
 </resources>

@@ -28,5 +28,12 @@
         <argument
             android:name="programTitle"
             app:argType="string" />
+        <action
+            android:id="@+id/action_tracksFragment_to_audioSettingsFragment"
+            app:destination="@id/audioSettingsFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/audioSettingsFragment"
+        android:name="com.sergey.pugachov.iawake.ui.tracks.audiosettings.AudioSettingsFragment"
+        android:label="AudioSettingsFragment" />
 </navigation>
