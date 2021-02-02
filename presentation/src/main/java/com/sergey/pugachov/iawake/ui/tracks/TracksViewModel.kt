@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 
 class TracksViewModel(
     private val programId: String,
+    private val programCoverUrl: String,
     private val getProgramTracksUseCase: GetProgramTracksUseCase,
     private val trackPlayer: TrackPlayer
 ) : ViewModel() {
@@ -39,7 +40,7 @@ class TracksViewModel(
         when {
             currentTrack?.track != track -> {
                 _selectedTrack.value = SelectedTrack(track)
-                trackPlayer.play(track)
+                trackPlayer.play(track.title, programCoverUrl, track.url)
             }
             currentTrack.isPlaying -> {
                 _selectedTrack.value = currentTrack.copy(isPlaying = false)
