@@ -21,6 +21,7 @@ object Versions {
     const val androidXEspresso = "3.3.0"
     const val junit = "4.13.1"
     const val gson = "2.8.6"
+    const val lottie = "3.3.1"
 }
 
 object Dependencies {
@@ -95,6 +96,10 @@ object Dependencies {
         const val material = "com.google.android.material:material:${Versions.material}"
         const val exoPlayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayer}"
         const val gson ="com.google.code.gson:gson:${Versions.gson}"
+    }
+
+    object Lottie {
+        const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     }
 
     object Test{

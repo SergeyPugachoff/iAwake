@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergey.pugachov.iawake.domain.model.common.Result
-import com.sergey.pugachov.iawake.domain.model.programs.TrackModel
 import com.sergey.pugachov.iawake.domain.usecase.GetProgramTracksUseCase
 import com.sergey.pugachov.iawake.tools.player.PlayerState
 import com.sergey.pugachov.iawake.tools.player.TrackPlayer
-import com.sergey.pugachov.iawake.ui.tracks.model.SelectedTrack
+import com.sergey.pugachov.iawake.ui.tracks.model.TracksUiModel
 import kotlinx.coroutines.launch
 
 class TracksViewModel(
@@ -19,11 +18,11 @@ class TracksViewModel(
     private val trackPlayer: TrackPlayer
 ) : ViewModel() {
 
-    private val _tracks = MutableLiveData<List<TrackModel>>()
-    private val _selectedTrack = MutableLiveData<SelectedTrack>()
+    private val _tracks = MutableLiveData<List<TracksUiModel>>()
+    private val _selectedTrack = MutableLiveData<TracksUiModel>()
 
-    val tracks: LiveData<List<TrackModel>> = _tracks
-    val selectedTrack: LiveData<SelectedTrack> = _selectedTrack
+    val tracks: LiveData<List<TracksUiModel>> = _tracks
+    val selectedTrack: LiveData<TracksUiModel> = _selectedTrack
 
     init {
         getTracks()
@@ -35,33 +34,54 @@ class TracksViewModel(
         super.onCleared()
     }
 
-    fun toggleTrackSelection(track: TrackModel) {
-        val currentTrack = _selectedTrack.value
-        when {
-            currentTrack?.track != track -> {
-                _selectedTrack.value = SelectedTrack(track)
-                trackPlayer.play(track.title, programCoverUrl, track.url)
-            }
-            currentTrack.isPlaying -> {
-                _selectedTrack.value = currentTrack.copy(isPlaying = false)
-                trackPlayer.pause()
-            }
-            else -> {
-                _selectedTrack.value = currentTrack.copy(isPlaying = false)
-                trackPlayer.resume()
-            }
+    fun play() {
+        if (_selectedTrack.value == null && !_tracks.value.isNullOrEmpty()) {
+            val track = _tracks.value?.first()
+            play(track!!)
+        }else{
+            play(_selectedTrack.value!!)
         }
+    }
+
+    fun play(track: TracksUiModel) {
+        val currentSelectedTrack = _selectedTrack.value
+        _selectedTrack.value = track.copy(state = TracksUiModel.State.Loading)
+        if (track.isSame(currentSelectedTrack) && currentSelectedTrack?.state == TracksUiModel.State.Paused) {
+            trackPlayer.resume()
+        } else {
+            trackPlayer.play(track.title, programCoverUrl, track.url)
+        }
+    }
+
+    fun pause() {
+        _selectedTrack.value = _selectedTrack.value?.copy(state = TracksUiModel.State.Paused)
+        trackPlayer.pause()
     }
 
     private fun getTracks() {
         viewModelScope.launch {
             val result = getProgramTracksUseCase(programId)
-            _tracks.value = if (result is Result.Success) result.data else emptyList()
+            _tracks.value = if (result is Result.Success) {
+                result.data.map { TracksUiModel(it) }
+            } else {
+                emptyList()
+            }
         }
     }
 
     private fun handlePlayerState(playerState: PlayerState) {
-        val currentTrack = _selectedTrack.value
-        _selectedTrack.value = currentTrack?.copy(isPlaying = playerState == PlayerState.Playing)
+        val currentSelectedTrack = _selectedTrack.value
+
+        val newState = when (playerState) {
+            is PlayerState.Buffering -> TracksUiModel.State.Loading
+            is PlayerState.Playing -> TracksUiModel.State.Playing
+            is PlayerState.Paused -> TracksUiModel.State.Paused
+            is PlayerState.Stopped -> TracksUiModel.State.Stopped
+            else -> TracksUiModel.State.Undefined
+        }
+
+        if (currentSelectedTrack?.state != newState) {
+            _selectedTrack.value = currentSelectedTrack?.copy(state = newState)
+        }
     }
 }

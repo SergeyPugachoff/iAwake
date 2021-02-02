@@ -4,15 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sergey.pugachov.iawake.databinding.ViewTracksListItemBinding
-import com.sergey.pugachov.iawake.domain.model.programs.TrackModel
-import com.sergey.pugachov.iawake.ui.tracks.model.SelectedTrack
+import com.sergey.pugachov.iawake.ui.tracks.model.TracksUiModel
 
 class TracksAdapter(
-    private val onPlayClicked: (track: TrackModel) -> Unit
+    private val onItemClick: (track: TracksUiModel) -> Unit
 ) : RecyclerView.Adapter<TracksAdapter.TrackHolder>() {
 
-    private val items: MutableList<TrackModel> = mutableListOf()
-    private var selectedTrack: SelectedTrack? = null
+    private val items: MutableList<TracksUiModel> = mutableListOf()
+    private var selectedTrack: TracksUiModel? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {
         val binding = ViewTracksListItemBinding.inflate(
@@ -23,26 +22,34 @@ class TracksAdapter(
 
     override fun onBindViewHolder(holder: TrackHolder, position: Int) {
         val track = items[position]
-        val isTrackCurrentlyPlayed =
-            selectedTrack?.track?.id == track.id && selectedTrack?.isPlaying == true
-        holder.bind(track, isTrackCurrentlyPlayed)
+        val isSelected = selectedTrack?.id == track.id
+        holder.bind(track, isSelected)
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun setItems(items: List<TrackModel>) {
+    fun setItems(items: List<TracksUiModel>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun setSelectedTrack(selectedTrack: SelectedTrack) {
-        this.selectedTrack = selectedTrack
-        val index = items.indexOfFirst { selectedTrack.track.id == it.id }
-        if (index >= 0) {
-            items[index] = selectedTrack.track
-            notifyDataSetChanged()
+    fun setSelectedTrack(track: TracksUiModel) {
+        val oldSelectedTrackId = selectedTrack?.id
+        val newSelectedTrackId = track.id
+
+        selectedTrack = track
+
+        if (oldSelectedTrackId != null) {
+            notifyTrackChanged(oldSelectedTrackId)
         }
+
+        notifyTrackChanged(newSelectedTrackId)
+    }
+
+    private fun notifyTrackChanged(id: String) {
+        val position = items.indexOfFirst { it.id == id }
+        if (position >= 0) notifyItemChanged(position)
     }
 
     inner class TrackHolder(
@@ -51,13 +58,13 @@ class TracksAdapter(
 
         init {
             binding.root.setOnClickListener {
-                onPlayClicked(items[adapterPosition])
+                onItemClick(items[adapterPosition])
             }
         }
 
-        fun bind(track: TrackModel, isPlaying: Boolean) {
-            binding.playPauseButton.isChecked = isPlaying
+        fun bind(track: TracksUiModel, isSelected: Boolean) {
             binding.trackTitle.text = track.title
+            binding.trackTitle.isChecked = isSelected
         }
     }
 }

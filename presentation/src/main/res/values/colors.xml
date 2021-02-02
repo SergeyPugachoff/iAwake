@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="colorPrimary">#4DB6AC</color>
+    <color name="colorPrimaryVariant">#4DB6AC</color>
+    <color name="colorSecondary">#33691E</color>
+    <color name="colorSecondaryVariant">#33691E</color>
+    <color name="colorBackground">#000000</color>
+    <color name="colorSurface">#121212</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorOnSecondary">#FFFFFFFF</color>
+    <color name="colorOnBackground">#FFFFFFFF</color>
+    <color name="colorOnSurface">#FFFFFFFF</color>
+    <color name="colorOnError">#FF000000</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="track_list_background_color">#41E1E1E1</color>
+<!-- Tracks list -->
+    <color name="track_cover_bottom_gradient_start">@color/black</color>
+    <color name="track_cover_top_gradient_start">@color/black</color>
+    <color name="track_cover_top_gradient_end">#323232</color>
+    <color name="track_list_toolbar_bkg_color">@color/black</color>
+    <color name="track_list_toolbar_text_color">@color/white</color>
+    <color name="track_list_item_text_color">@color/white</color>
+    <color name="track_list_item_selected_text_color">@color/colorSecondary</color>
+    <color name="track_list_play_pause_button_bkg_color">@color/colorSecondary</color>
+    <color name="track_list_selected_track_bkg_color">@color/colorSurface</color>
+
 </resources>

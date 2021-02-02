@@ -42,6 +42,7 @@ class ProgramsAdapter(
         }
 
         fun bind(program: ProgramModel) {
+            binding.programTitle.text = program.title
             binding.programImage.load(program.thumbnailUrl)
         }
     }
