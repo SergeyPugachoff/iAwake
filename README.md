@@ -17,6 +17,8 @@ It's demo of music player app that allow to get list of free programs, discover 
 - Details of currently played track
 ## Showcase
 ### Video
-![Sample](/githubart/video.gif)
+<div align="left">
+        <img width="30%" src="/githubart/video.gif" alt="Video" title="List screen"</img>
+</div>
 ### Apk
-![Download APK](/githubart/iAwake.apk)
+[Download APK](/githubart/iAwake.apk)
