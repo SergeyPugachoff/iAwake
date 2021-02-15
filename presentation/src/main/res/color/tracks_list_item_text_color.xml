@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/track_list_item_selected_text_color"/>
+    <item android:state_selected="true" android:color="@color/track_list_item_selected_text_color"/>
+    <item android:color="@color/track_list_item_text_color"/>
+</selector>
