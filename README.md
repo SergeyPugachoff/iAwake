@@ -16,9 +16,9 @@ It's demo of music player app that allow to get list of free programs, discover 
 - Dark and Light themes
 - Details of currently played track
 ## Showcase
-### Video
+
 <div align="left">
         <img width="30%" src="/githubart/video.gif" alt="Video" title="List screen"</img>
 </div>
-### Apk
+
 [Download APK](/githubart/iAwake.apk)
