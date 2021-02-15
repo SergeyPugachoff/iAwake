@@ -12,26 +12,28 @@ import com.sergey.pugachov.iawake.ui.tracks.model.TracksUiModel
 import kotlinx.coroutines.launch
 
 class TracksViewModel(
-    private val programId: String,
-    private val programCoverUrl: String,
     private val getProgramTracksUseCase: GetProgramTracksUseCase,
     private val trackPlayer: TrackPlayer
 ) : ViewModel() {
 
+    private lateinit var programId: String
+    private lateinit var programCoverUrl: String
     private val _tracks = MutableLiveData<List<TracksUiModel>>()
     private val _selectedTrack = MutableLiveData<TracksUiModel>()
 
     val tracks: LiveData<List<TracksUiModel>> = _tracks
     val selectedTrack: LiveData<TracksUiModel> = _selectedTrack
 
-    init {
-        getTracks()
-        trackPlayer.onStateChanged(::handlePlayerState)
-    }
-
     override fun onCleared() {
         trackPlayer.release()
         super.onCleared()
+    }
+
+    fun getTracks(programId: String, programCoverUrl: String){
+        this.programId = programId
+        this.programCoverUrl = programCoverUrl
+        getTracks()
+        trackPlayer.onStateChanged(::handlePlayerState)
     }
 
     fun play() {

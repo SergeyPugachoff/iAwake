@@ -33,6 +33,7 @@ class SelectedTrackView @JvmOverloads constructor(
             }
 
             trackTitle.text = tracksUiModel.title
+            trackTitle.isSelected = tracksUiModel.isPlaying()
             playPauseButton.isChecked = tracksUiModel.isPlaying()
 
             if (tracksUiModel.state == TracksUiModel.State.Playing) {

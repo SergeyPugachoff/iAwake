@@ -2,32 +2,29 @@ package com.sergey.pugachov.iawake.ui.tracks
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnticipateOvershootInterpolator
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import coil.load
 import com.sergey.pugachov.iawake.R
 import com.sergey.pugachov.iawake.databinding.FragmentTracksBinding
 import com.sergey.pugachov.iawake.extentions.binding.viewBinding
 import com.sergey.pugachov.iawake.extentions.widgets.CheckableImageView
-import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 
 class TracksFragment : Fragment(R.layout.fragment_tracks) {
 
     private val arguments by navArgs<TracksFragmentArgs>()
     private val binding by viewBinding(FragmentTracksBinding::bind)
-    private val viewModel: TracksViewModel by viewModel {
-        parametersOf(
-            arguments.programId,
-            arguments.programCoverUrl
+    private val viewModel: TracksViewModel by sharedViewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.getTracks(
+            programId = arguments.programId,
+            programCoverUrl = arguments.programCoverUrl
         )
     }
 
@@ -65,14 +62,6 @@ class TracksFragment : Fragment(R.layout.fragment_tracks) {
             }
         }
 
-        binding.selectedTrackView.setOnClickListener { isPlayed ->
-            if (isPlayed) {
-                viewModel.pause()
-            } else {
-                viewModel.play()
-            }
-        }
-
         viewModel.tracks.observe(viewLifecycleOwner, { tracks ->
             (binding.content.tracksList.adapter as TracksAdapter).setItems(tracks)
         })
@@ -82,31 +71,6 @@ class TracksFragment : Fragment(R.layout.fragment_tracks) {
 
             (binding.content.tracksList.adapter as TracksAdapter).setSelectedTrack(selectedTrack)
 
-            binding.selectedTrackView.displayTrack(selectedTrack)
-            showSelectedTrackView()
         })
-    }
-
-    private fun showSelectedTrackView() {
-        if (binding.selectedTrackView.isInvisible) {
-            binding.selectedTrackView.isInvisible = false
-
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.root)
-
-            val transition = ChangeBounds()
-            val interpolator = AnticipateOvershootInterpolator(1.0f)
-            transition.interpolator = interpolator
-
-            TransitionManager.beginDelayedTransition(binding.root, transition)
-            constraintSet.clear(binding.selectedTrackView.id, ConstraintSet.TOP)
-            constraintSet.connect(
-                binding.selectedTrackView.id,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM
-            )
-            constraintSet.applyTo(binding.root)
-        }
     }
 }

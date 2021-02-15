@@ -8,13 +8,6 @@ import org.koin.dsl.module
 
 val viewModelsModule = module {
     viewModel { ProgramsViewModel(get()) }
-    viewModel { (programId: String, programCoverUrl: String) ->
-        TracksViewModel(
-            programId,
-            programCoverUrl,
-            get(),
-            get()
-        )
-    }
+    viewModel { TracksViewModel(get(), get()) }
     viewModel { AudioSettingsViewModel(get(), get(), get(), get()) }
 }
